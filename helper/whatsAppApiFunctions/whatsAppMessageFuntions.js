@@ -7,7 +7,9 @@ export const sendMessage = async (number, message) => {
   const chatId = `${number.replace('+', '')}@c.us`;
 
   try {
+    console.log("CHAT ID : ", chatId)
     const contact = await client.getNumberId(number);
+    console.log("CONTACT : ", contact)
     if (!contact) {
       throw new Error(`The number ${number} is not registered on WhatsApp.`);
     }

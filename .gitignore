@@ -156,3 +156,5 @@ package-lock.json
 
 # WhatsApp folder authentication
 whatsApp/.wwebjs_auth
+.wwebjs_cache
+*.env

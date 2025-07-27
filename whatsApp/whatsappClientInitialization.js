@@ -20,7 +20,8 @@ const { Client, LocalAuth } = pkg;
 // Declare the client variable globally
 let client;
 let isReinitializing = false; // Prevents multiple reinitialization attempts
-
+let clientStatus = 'disconnected'; // Can be: disconnected, generating_qr, connected
+let qrCodeData = null;
 // Function to initialize the WhatsApp client
 const initializeClient = async () => {
   if (isReinitializing || (client && client.info && client.info.connected)) {
@@ -59,17 +60,23 @@ const initializeClient = async () => {
 
     // Ensure the QR code is displayed when needed
     client.on('qr', (qr) => {
-      console.log('QR event triggered. Scan the QR code to log in to WhatsApp:');
+      console.log( 'QR event triggered. Scan the QR code to log in to WhatsApp:');
       qrcode.generate(qr, { small: true });
+      clientStatus = 'generating_qr';
+      qrCodeData = qr;
     });
 
     client.on('ready', () => {
       console.log('WhatsApp Client is ready!');
+      clientStatus = 'connected';
+      qrCodeData = null; // Clear QR code once connected
       isReinitializing = false;
     });
 
     client.on('disconnected', async (reason) => {
       console.log(`WhatsApp Client disconnected: ${reason}.`);
+      clientStatus = 'disconnected';
+      qrCodeData = null;
       await handleDisconnection(reason);
     });
 
@@ -154,4 +161,4 @@ const checkClientState = async () => {
 checkClientState();
 
 // Export client for use in other modules
-export { client, initializeClient };
+export { client, initializeClient, clientStatus, qrCodeData };

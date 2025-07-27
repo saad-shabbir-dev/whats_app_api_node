@@ -2,9 +2,17 @@
 
 import express from 'express';
 import { sendMessage, sendGroupMessage, sendMessageToGroupById, getAllGroupIds } from '../../helper/whatsAppApiFunctions/whatsAppMessageFuntions.js'; // Ensure the correct path to your API functions
+import { qrCodeData, clientStatus } from "../../whatsApp/whatsappClientInitialization.js"
 
 // Create a new router object
 const router = express.Router();
+
+router.get('/status', (req, res) => {
+  res.status(200).json({
+    status: clientStatus,
+    qr: qrCodeData, // This will be null if not in 'generating_qr' state
+  });
+});
 
 // API endpoint to send a WhatsApp message
 router.post('/send-message-single', async (req, res) => {
